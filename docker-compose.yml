@@ -1,4 +1,5 @@
 services:
+  # Command-line interface (one-shot or interactive prompts).
   linkedin-agent:
     build: .
     image: linkedin-post-generator
@@ -11,3 +12,20 @@ services:
     # Override args at runtime, e.g.:
     #   docker compose run --rm linkedin-agent -t "AI in Healthcare" -l English
     # With no args it falls back to interactive prompts.
+
+  # Modern web UI (Streamlit) — open http://localhost:8501
+  ui:
+    build: .
+    image: linkedin-post-generator
+    env_file:
+      - .env
+    ports:
+      - "8501:8501"
+    # Override the CLI entrypoint to launch the Streamlit server.
+    entrypoint:
+      - streamlit
+      - run
+      - app.py
+      - --server.address=0.0.0.0
+      - --server.port=8501
+      - --server.headless=true

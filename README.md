@@ -26,7 +26,11 @@ linkedin-post-generator-agent/
 │   ├── __init__.py      # exports LinkedInPostAgent, PostRequest
 │   ├── agent.py         # the LangChain LCEL chain + agent class
 │   └── prompts.py       # chat prompt templates
+├── app.py               # modern Streamlit web UI
 ├── main.py              # CLI entry point
+├── demo.sh              # guided demo for recording a walkthrough
+├── Dockerfile
+├── docker-compose.yml
 ├── requirements.txt
 ├── .env.example
 └── README.md
@@ -64,7 +68,21 @@ linkedin-post-generator-agent/
 
 ## Usage
 
-### Interactive
+### Web UI (recommended)
+
+A modern, interactive [Streamlit](https://streamlit.io/) interface:
+
+```bash
+streamlit run app.py
+```
+
+Then open the URL it prints (default: http://localhost:8501). You get a topic
+box, a language picker, optional tone/audience fields, a model selector, and a
+creativity slider in the sidebar — plus copy and download buttons for the
+generated post. You can paste an API key directly in the sidebar if you haven't
+set `GOOGLE_API_KEY` in `.env`.
+
+### Interactive CLI
 
 ```bash
 python main.py
@@ -118,6 +136,13 @@ docker compose run --rm linkedin-agent -t "Remote Work Productivity" -l Bengali
 
 # Interactive prompts
 docker compose run --rm linkedin-agent
+```
+
+### Run the Web UI with Docker
+
+```bash
+# Starts the Streamlit UI on http://localhost:8501
+docker compose up ui
 ```
 
 > The container runs as a non-root user and reads configuration from environment

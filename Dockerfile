@@ -1,22 +1,34 @@
 # syntax=docker/dockerfile:1
 
-FROM python:3.12-slim
+# ---- Stage 1: builder -------------------------------------------------------
+# Installs dependencies into a self-contained prefix so the final image
+# doesn't carry pip's build cache or any toolchain.
+FROM python:3.12-slim AS builder
 
-# Keep Python output unbuffered and skip .pyc files for cleaner container logs.
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=1 \
+ENV PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
 WORKDIR /app
 
-# Install dependencies first to leverage Docker layer caching.
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+# Install into /install so we can copy just the packages into the runtime stage.
+RUN pip install --prefix=/install -r requirements.txt
+
+# ---- Stage 2: runtime -------------------------------------------------------
+FROM python:3.12-slim AS runtime
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
+
+WORKDIR /app
+
+# Bring over only the installed dependencies from the builder stage.
+COPY --from=builder /install /usr/local
 
 # Copy the application source.
 COPY linkedin_agent/ ./linkedin_agent/
-COPY main.py .
+COPY .streamlit/ ./.streamlit/
+COPY main.py app.py ./
 
 # Run as a non-root user for safety.
 RUN useradd --create-home --uid 1000 appuser
