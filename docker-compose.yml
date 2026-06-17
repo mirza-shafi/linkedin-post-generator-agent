@@ -1,0 +1,13 @@
+services:
+  linkedin-agent:
+    build: .
+    image: linkedin-post-generator
+    # Loads GOOGLE_API_KEY / GEMINI_MODEL / LLM_TEMPERATURE from your .env file.
+    env_file:
+      - .env
+    # Keep STDIN open + allocate a TTY so interactive prompts work.
+    stdin_open: true
+    tty: true
+    # Override args at runtime, e.g.:
+    #   docker compose run --rm linkedin-agent -t "AI in Healthcare" -l English
+    # With no args it falls back to interactive prompts.

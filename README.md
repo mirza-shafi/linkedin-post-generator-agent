@@ -89,6 +89,40 @@ python main.py -t "Cloud Cost Optimization" -l Spanish --audience "startup found
 | `--model`            | Override the LLM model                           |
 | `--temperature`      | Override the sampling temperature                |
 
+## Run with Docker
+
+Make sure your `GOOGLE_API_KEY` is set in a `.env` file (see Setup). The `.env`
+file is **not** baked into the image — it is passed in at runtime.
+
+### Build the image
+
+```bash
+docker build -t linkedin-post-generator .
+```
+
+### Run with `docker run`
+
+```bash
+# One-shot with flags
+docker run --rm --env-file .env linkedin-post-generator -t "AI in Healthcare" -l English
+
+# Interactive prompts (note the -it flags)
+docker run --rm -it --env-file .env linkedin-post-generator
+```
+
+### Run with Docker Compose
+
+```bash
+# One-shot with flags
+docker compose run --rm linkedin-agent -t "Remote Work Productivity" -l Bengali
+
+# Interactive prompts
+docker compose run --rm linkedin-agent
+```
+
+> The container runs as a non-root user and reads configuration from environment
+> variables, so the same `.env` you use locally works inside Docker.
+
 ## Use as a library
 
 ```python

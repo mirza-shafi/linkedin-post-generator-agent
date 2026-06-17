@@ -1,0 +1,26 @@
+# Secrets — never bake into the image
+.env
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python caches
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# VCS / OS / editor
+.git/
+.gitignore
+.DS_Store
+.idea/
+.vscode/
+
+# Docs and Docker files (not needed at runtime)
+README.md
+Dockerfile
+docker-compose.yml
+.dockerignore
